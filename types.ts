@@ -1,3 +1,4 @@
+
 export interface ResonanceMetrics {
   input: string;
   numericSequence: number[];
@@ -12,10 +13,19 @@ export enum Epoch {
   MODERN = '2025_CE'
 }
 
+export interface OracleAnalysis {
+  architect: string; // The Engineering View
+  mystic: string;    // The Esoteric View
+  void: string;      // The Entropic View
+  divergence: number; // 0.0 to 1.0 (Variance between models)
+  synthesis: string; // The computed consensus
+}
+
 export interface ChatMessage {
   role: 'user' | 'system' | 'model';
-  content: string;
+  content: string | OracleAnalysis; // Content can now be structured data
   timestamp: number;
+  type?: 'text' | 'analysis';
 }
 
 export interface TemporalNode {
@@ -48,4 +58,13 @@ export interface GrandRitualReport {
   combinedResonance: number;
   timestamp: string;
   results: Record<ArchetypeRole, ArchetypeResult>;
+}
+
+export interface GrimoireBlock {
+  index: number;
+  timestamp: number;
+  previousHash: string;
+  hash: string;
+  data: OracleAnalysis;
+  sealType: 'GENESIS' | 'HERMETIC_SEAL';
 }

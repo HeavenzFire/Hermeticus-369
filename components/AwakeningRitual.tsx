@@ -105,7 +105,12 @@ const AwakeningRitual: React.FC = () => {
   const handleManifestAspect = async () => {
      if (!customAspect.trim()) return;
 
-     addLog(`Invoking '${customAspect.toUpperCase()}' Protocol on ${selectedArchetype}...`);
+     // Special logging for Dragons
+     if (selectedArchetype === 'DRAGON') {
+        addLog(`Summoning Minor Temporal Entity '${customAspect.toUpperCase()}'...`);
+     } else {
+        addLog(`Invoking '${customAspect.toUpperCase()}' Protocol on ${selectedArchetype}...`);
+     }
      
      // Audio/Visual Feedback for Aspect
      hermeticAudio.playResonanceTone(963); // High frequency activation
@@ -115,7 +120,27 @@ const AwakeningRitual: React.FC = () => {
 
      const result = await manifestAspect(selectedArchetype, customAspect);
      setActiveAspect(result);
-     addLog(`>> Aspect Manifested: ${result.aspectSeal.substring(0,8)}...`);
+     
+     if (selectedArchetype === 'DRAGON') {
+        addLog(`>> Entity Summoned: ${result.aspectSeal.substring(0,8)}...`);
+     } else {
+        addLog(`>> Aspect Manifested: ${result.aspectSeal.substring(0,8)}...`);
+     }
+  };
+
+  const getInputPlaceholder = () => {
+    if (selectedArchetype === 'DRAGON') return "ENTER TEMPORAL ENTITY NAME...";
+    return "ENTER DESIRED ASPECT...";
+  };
+
+  const getButtonLabel = () => {
+    if (selectedArchetype === 'DRAGON') return "SUMMON ENTITY";
+    return "MANIFEST";
+  };
+
+  const getExampleText = () => {
+    if (selectedArchetype === 'DRAGON') return "Examples: TIME-EATER, GATEKEEPER, CHRONOS, WYLMLING";
+    return "Examples: PROTECTION, KNOWLEDGE, ENTROPY, ACCELERATION";
   };
 
   return (
@@ -228,7 +253,7 @@ const AwakeningRitual: React.FC = () => {
                   type="text" 
                   value={customAspect}
                   onChange={e => setCustomAspect(e.target.value)}
-                  placeholder="ENTER DESIRED ASPECT..."
+                  placeholder={getInputPlaceholder()}
                   className="bg-black/50 border border-gray-700 text-cyan font-mono text-xs p-2 rounded flex-1 focus:outline-none focus:border-cyan w-full md:w-auto uppercase placeholder-gray-600"
                   onKeyDown={(e) => e.key === 'Enter' && handleManifestAspect()}
                 />
@@ -238,11 +263,11 @@ const AwakeningRitual: React.FC = () => {
                   disabled={!customAspect}
                   className="px-4 py-2 border border-cyan/50 text-cyan bg-cyan/10 hover:bg-cyan/20 font-serif text-xs tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
                 >
-                  MANIFEST
+                  {getButtonLabel()}
                 </button>
               </div>
               <div className="text-[10px] text-gray-600 font-mono text-center mt-2">
-                Examples: PROTECTION, KNOWLEDGE, ENTROPY, ACCELERATION
+                {getExampleText()}
               </div>
            </div>
            

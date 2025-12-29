@@ -1,21 +1,51 @@
+
 import React, { useState, useEffect } from 'react';
 import { calculateResonance } from './utils/math';
-import { ResonanceMetrics } from './types';
+import { ResonanceMetrics, GrimoireBlock, OracleAnalysis } from './types';
+import { createGenesisBlock, mineBlock } from './utils/ledger';
 import SigilGenerator from './components/SigilGenerator';
 import TemporalBridge from './components/TemporalBridge';
 import AIOccultist from './components/AIOccultist';
 import AwakeningRitual from './components/AwakeningRitual';
+import Grimoire from './components/Grimoire';
 
-type ViewMode = 'ANALYZER' | 'RITUAL';
+type ViewMode = 'ANALYZER' | 'RITUAL' | 'GRIMOIRE';
 
 export default function App() {
   const [inputText, setInputText] = useState('Hermeticus');
   const [metrics, setMetrics] = useState<ResonanceMetrics | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('ANALYZER');
+  
+  // Ledger State
+  const [grimoireChain, setGrimoireChain] = useState<GrimoireBlock[]>([]);
+
+  // Initialize Genesis Block on Mount
+  useEffect(() => {
+    const initChain = async () => {
+        const genesis = await createGenesisBlock();
+        setGrimoireChain([genesis]);
+    };
+    initChain();
+  }, []);
 
   useEffect(() => {
     setMetrics(calculateResonance(inputText));
   }, [inputText]);
+
+  // Handler to seal an analysis into the blockchain
+  const handleSealResult = async (analysis: OracleAnalysis) => {
+    if (grimoireChain.length === 0) return;
+    
+    const lastBlock = grimoireChain[grimoireChain.length - 1];
+    const newBlock = await mineBlock(lastBlock, analysis);
+    
+    setGrimoireChain(prev => [...prev, newBlock]);
+    
+    // Optional: Visual feedback or auto-switch view
+    const root = document.getElementById('root');
+    root?.classList.add('animate-pulse');
+    setTimeout(() => root?.classList.remove('animate-pulse'), 500);
+  };
 
   return (
     <div className="min-h-screen bg-black text-gray-200 p-4 md:p-8 font-sans bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
@@ -40,6 +70,12 @@ export default function App() {
             >
               RITUALS
             </button>
+            <button 
+              onClick={() => setViewMode('GRIMOIRE')}
+              className={`px-4 py-1 text-xs font-mono border transition-all ${viewMode === 'GRIMOIRE' ? 'border-gray-200 text-white bg-gray-800' : 'border-gray-800 text-gray-500 hover:border-gray-600'}`}
+            >
+              GRIMOIRE [{grimoireChain.length}]
+            </button>
           </div>
           <div className="text-right">
             <div className="text-xs font-mono text-cyan">SYSTEM STATUS: NOMINAL</div>
@@ -50,7 +86,7 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto">
         
-        {viewMode === 'ANALYZER' ? (
+        {viewMode === 'ANALYZER' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Column: Input & Resonance */}
             <section className="lg:col-span-4 space-y-8">
@@ -106,14 +142,22 @@ export default function App() {
 
             {/* Right Column: AI & Temporal Data */}
             <section className="lg:col-span-8 flex flex-col gap-6">
-              <AIOccultist resonanceContext={inputText} />
+              <AIOccultist resonanceContext={inputText} onSealResult={handleSealResult} />
               <TemporalBridge />
             </section>
           </div>
-        ) : (
+        )}
+
+        {viewMode === 'RITUAL' && (
           <div className="w-full max-w-5xl mx-auto">
             <AwakeningRitual />
           </div>
+        )}
+
+        {viewMode === 'GRIMOIRE' && (
+           <div className="w-full max-w-4xl mx-auto h-[600px]">
+              <Grimoire chain={grimoireChain} />
+           </div>
         )}
 
         {/* System Footer Info */}
