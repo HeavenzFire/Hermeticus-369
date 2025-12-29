@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hermeticus 369 // Temporal Computation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              void: '#0a0a0c',
+              aether: '#1a1b26',
+              gold: '#c5a059',
+              'gold-dim': '#8a6e36',
+              cyan: '#00f0ff',
+              crimson: '#ff3333'
+            },
+            fontFamily: {
+              sans: ['Fira Code', 'monospace'],
+              serif: ['Cinzel', 'serif'],
+            },
+            animation: {
+              'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'glitch': 'glitch 1s linear infinite',
+              'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            },
+            keyframes: {
+              glitch: {
+                '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                '62%': { transform: 'translate(0,0) skew(5deg)' },
+              },
+              shake: {
+                '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #e2e8f0;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0c; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c5a059; 
+      }
+
+      /* Reality Distortion Effects */
+      .temporal-distortion {
+        position: relative;
+      }
+      .temporal-distortion::before,
+      .temporal-distortion::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0c;
+      }
+      .temporal-distortion::before {
+        left: 2px;
+        text-shadow: -1px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+      }
+      .temporal-distortion::after {
+        left: -2px;
+        text-shadow: -1px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+      }
+      
+      @keyframes glitch-anim {
+        0% { clip: rect(30px, 9999px, 10px, 0); }
+        20% { clip: rect(80px, 9999px, 90px, 0); }
+        40% { clip: rect(10px, 9999px, 50px, 0); }
+        60% { clip: rect(40px, 9999px, 20px, 0); }
+        80% { clip: rect(70px, 9999px, 100px, 0); }
+        100% { clip: rect(20px, 9999px, 60px, 0); }
+      }
+      @keyframes glitch-anim2 {
+        0% { clip: rect(10px, 9999px, 80px, 0); }
+        20% { clip: rect(50px, 9999px, 10px, 0); }
+        40% { clip: rect(90px, 9999px, 30px, 0); }
+        60% { clip: rect(20px, 9999px, 70px, 0); }
+        80% { clip: rect(60px, 9999px, 40px, 0); }
+        100% { clip: rect(10px, 9999px, 50px, 0); }
+      }
+
+      .crt-scanline {
+        background: linear-gradient(
+          to bottom,
+          rgba(255,255,255,0),
+          rgba(255,255,255,0) 50%,
+          rgba(0,0,0,0.1) 50%,
+          rgba(0,0,0,0.1)
+        );
+        background-size: 100% 4px;
+        position: fixed;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "d3": "https://esm.sh/d3@^7.9.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <div class="crt-scanline"></div>
+  </body>
+</html>
